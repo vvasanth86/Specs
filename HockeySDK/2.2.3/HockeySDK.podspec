@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'HockeySDK'
-  s.version  = '2.2.3'
+  s.version  = '2.2.4'
   s.license  = 'MIT'
   s.platform = :ios
   s.summary  = 'Distribute beta apps and collect crash reports with HockeyApp.'
@@ -19,16 +19,6 @@ Pod::Spec.new do |s|
   s.source_files = 'Classes'
   s.resources    = 'Resources/Hockey.bundle', 'Resources/Quincy.bundle'
   s.frameworks   = 'QuartzCore', 'SystemConfiguration', 'CrashReporter'
-  s.xcconfig     = { 'FRAMEWORK_SEARCH_PATHS' => '"$(BUILT_PRODUCTS_DIR)/Pods/Frameworks"' }
+  s.xcconfig     = { 'FRAMEWORK_SEARCH_PATHS' => '"$(PODS_ROOT)/HockeySDK/Vendor"' }
 
-  def s.post_install(target_installer)
-    # Add a copy build phase and make it copy the CrashReporter.framework to the shared BUILT_PRODUCTS_DIR,
-    # so that both the Pods project and the user's project will pick it up.
-    phase = target_installer.target.buildPhases.add(Xcodeproj::Project::PBXCopyFilesBuildPhase, 'dstPath' => 'Pods/Frameworks')
-    file = target_installer.project.main_group.files.new('path' => 'HockeySDK/Vendor/CrashReporter.framework')
-    phase.files << file.buildFiles.new
-    phases = target_installer.target.attributes['buildPhases']
-    phases.delete(phase.uuid)
-    phases.insert(1, phase.uuid)
-  end  
 end
